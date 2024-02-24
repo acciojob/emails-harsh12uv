@@ -71,36 +71,41 @@ import java.util.*;
 public class Gmail extends Email {
 
     private int inboxCapacity;
-    private Queue<Mail> inbox; // Using a Queue to simulate inbox (FIFO)
-    private Queue<Mail> trash; // Using a Queue to simulate trash (FIFO)
+    private ArrayList<Mail> inbox; // Using a Queue to simulate inbox (FIFO)
+    private ArrayList<Mail> trash; // Using a Queue to simulate trash (FIFO)
 
     public Gmail(String emailId, int inboxCapacity) {
         super(emailId);
         this.inboxCapacity = inboxCapacity;
-        this.inbox = new LinkedList<>();
-        this.trash = new LinkedList<>();
+        this.inbox = new ArrayList<>();
+        this.trash = new ArrayList<>();
     }
 
     public void receiveMail(Date date, String sender, String message) {
         Mail newMail = new Mail(date, sender, message);
-        if (inbox.size() >= inboxCapacity) {
-            trash.add(inbox.poll()); // Move oldest mail in inbox to trash
+        if (inbox.size() > inboxCapacity) {
+            trash.add(inbox.remove(0)); // Move oldest mail in inbox to trash
         }
         inbox.add(newMail); // Add new mail to inbox
     }
 
     public void deleteMail(String message) {
-        inbox.removeIf(mail -> mail.getMessage().equals(message));
+//        inbox.removeIf(mail -> mail.getMessage().equals(message));
+        for(Mail mail:inbox){
+            if(mail.getMessage()==message){
+                inbox.remove(mail);
+            }
+        }
     }
 
     public String findLatestMessage() {
         if (inbox.isEmpty()) return null;
-        return inbox.peek().getMessage(); // Peek at the latest mail's message
+        return inbox.get(inbox.size()-1).getMessage(); // Peek at the latest mail's message
     }
 
     public String findOldestMessage() {
         if (inbox.isEmpty()) return null;
-        return ((LinkedList<Mail>) inbox).getLast().getMessage(); // Get the last (oldest) mail's message
+        return inbox.get(0).getMessage(); // Get the last (oldest) mail's message
     }
 
     public int findMailsBetweenDates(Date start, Date end) {
@@ -128,6 +133,7 @@ public class Gmail extends Email {
     public int getInboxCapacity() {
         return inboxCapacity;
     }
+
 
     // Helper class to represent an email
     private static class Mail {
