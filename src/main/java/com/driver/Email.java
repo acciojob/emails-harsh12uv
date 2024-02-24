@@ -1,4 +1,6 @@
 package com.driver;
+import java.util.*;
+import java.util.regex.*;
 
 public class Email {
 
@@ -25,5 +27,17 @@ public class Email {
         // 3. It contains at least one lowercase letter
         // 4. It contains at least one digit
         // 5. It contains at least one special character. Any character apart from alphabets and digits is a special character
+        if(password==oldPassword){
+            if(isValidPassword(newPassword)){
+                password=newPassword;
+            }
+        }
+    }
+    private boolean isValidPassword(String password) {
+        // Regex pattern to match all conditions
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^a-zA-Z\\d]).{8,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(password);
+        return matcher.matches();
     }
 }
